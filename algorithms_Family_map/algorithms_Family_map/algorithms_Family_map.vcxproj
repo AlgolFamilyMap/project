@@ -146,7 +146,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="familymap.cpp" />
+    <ClCompile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\Algol_project_familyMap\Algol_project_familyMap\FamilyMap_LJH.cpp" />
+    <ClCompile Include="test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\Algol_project_familyMap\Algol_project_familyMap\FamilyMap_LJH.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

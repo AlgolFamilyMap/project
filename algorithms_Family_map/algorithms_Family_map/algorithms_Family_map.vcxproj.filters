@@ -15,8 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="familymap.cpp">
+    <ClCompile Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\Algol_project_familyMap\Algol_project_familyMap\FamilyMap_LJH.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Documents\Visual Studio 2015\Projects\Algol_project_familyMap\Algol_project_familyMap\FamilyMap_LJH.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
