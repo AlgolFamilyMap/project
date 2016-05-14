@@ -5,22 +5,21 @@
 #include <string>
 using namespace std;
 
-struct treeNode {
+typedef struct TreeNode {
 	int level;
 	string myName;
 	string parentName;
 	string wife;
-	treeNode *bro;
-	treeNode *son;
-};
+	struct TreeNode *bro, *son;
+	struct TreeNode *next;	// 형제는 아니지만 같은 세대
+} treeNode;
 
 class FamilyMap {
-	treeNode *root;
-	treeNode *dummy;
+	treeNode *root, *dummy;
 public:
 	FamilyMap();
 	~FamilyMap();
-	void insert(int level, string myName, string parentName, string wife = "");
+	void insert(int level, string myName, string parentName = "", string wife = "");
 	void remove(int level, string myName);
 	void printAll();
 	void search(string myName);
