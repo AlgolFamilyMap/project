@@ -6,7 +6,7 @@
 
 using namespace std;
 
-FamilyMap::FamilyMap() {
+FamilyMap::FamilyMap(string fileName) {
 	dummy = new treeNode;
 	dummy->level = 0;
 	dummy->myName = "";
@@ -15,6 +15,45 @@ FamilyMap::FamilyMap() {
 	dummy->bro = NULL;
 	dummy->son = NULL;
 	root = dummy;
+	this->fileName = fileName;
+
+	ifstream fileIn;
+	fileIn.open(fileName); // 파일 열기
+	if (!fileIn.is_open()) { // 파일 열기 오류 체크
+		cout << "File Open error!" << endl;
+		exit(1);
+	}
+	//파일 입력
+	treeNode itemTable[100];
+	int tableSize = 0;
+	string buffer, strTemp[4];
+	// 파일 읽기 및 itemTable에 저장
+	while (!fileIn.eof()) {
+		getline(fileIn, buffer); // buffer에 저장
+		if (buffer.size() < 1)
+			break;
+
+		// 토큰 분리
+		int index = -1, beginIndex = 0;
+		for (int i = 0; i < 3; i++) {
+			index = buffer.find('\t', ++index); // "\t" 찾기
+			strTemp[i] = buffer.substr(beginIndex, index - beginIndex);
+			beginIndex = index + 1;
+		}
+		strTemp[3] = buffer.substr(beginIndex);
+
+		tableSize++;
+		itemTable[tableSize - 1].level = stoi(strTemp[0]);
+		itemTable[tableSize - 1].myName = strTemp[1];
+		itemTable[tableSize - 1].parentName = strTemp[2];
+		itemTable[tableSize - 1].wife = strTemp[3];
+	}
+
+	// 트리에 삽입
+	for (int i = 0; i < tableSize; i++)
+		insert(itemTable[i].level, itemTable[i].myName, itemTable[i].parentName, itemTable[i].wife);
+
+	fileIn.close();
 }
 
 FamilyMap::~FamilyMap() {
@@ -30,8 +69,8 @@ void FamilyMap::insert(int level, string myName, string parentName, string wife)
 	newChild->wife = wife;
 	newChild->bro = NULL;
 	newChild->son = NULL;
-
-	p = find(root, newChild->parentName);
+	if(parentName != "root")
+		p = find(root, newChild->parentName);
 
 	if (p->son == NULL) {	// 찾았는데 자식이 없으면ㅓ
 		p->son = newChild;			// 자식만 넣음
@@ -90,7 +129,15 @@ void FamilyMap::search(string myName) {
 }
 
 void FamilyMap::search(int level) {
-
+	printVector.clear();
+	find(root, level);
+	cout << "<검색 결과>" << endl;
+	for (int i = 0; i < printVector.size(); i++)
+	{
+		cout << "- 세대 : " << printVector[i]->level << endl;
+		cout << "- 이름 : " << printVector[i]->myName << endl;
+	}
+	
 }
 
 void FamilyMap::search(int level, string myName) {
@@ -193,7 +240,7 @@ bool FamilyMap::isEmpty() {
 }
 
 void FamilyMap::printMenu() {
-
+	cout << "1. 검색(이름)\t2. 검색(레벨)\t3.검색(레벨&이름)\t4.전체 출력\t5. 종료" << endl;
 }
 
 
@@ -202,33 +249,37 @@ treeNode* FamilyMap::getRoot() {
 }
 
 int main(void) {
-	FamilyMap familyMap;
-
-	familyMap.insert(1, "조상", "", "아내1");
-	familyMap.insert(2, "자식1", "조상");
-	familyMap.insert(2, "자식2", "조상", "아내2");
-	familyMap.insert(3, "손자1", "자식1", "아내3");
-	familyMap.insert(2, "자식3", "조상");
-	familyMap.insert(3, "손자2", "자식2", "아내4");
-	familyMap.insert(3, "손자3", "자식1", "아내5");
-	familyMap.insert(4, "증손자1", "손자3");
-	familyMap.insert(4, "증손자2", "손자2");
-	familyMap.insert(4, "증손자3", "손자3");
-	familyMap.insert(3, "손자4", "자식2");
-	familyMap.insert(4, "증손자4", "손자1");
-	familyMap.insert(5, "고손자1", "증손자2");
-
-	familyMap.printAll();
-
-	cout << endl;
-	familyMap.search(2, "자식3");
-	familyMap.search(3, "손자3");
-	familyMap.search(2, "자식2");
-	familyMap.search(4, "증손자3");
-
-
-	treeNode *yo = new treeNode;
-	yo = familyMap.find(familyMap.getRoot(), "증손자4");
-	cout << " find 예제 : " << yo->myName << endl;
+	FamilyMap familyMap("Family.txt");
+	string name;
+	int level;
+	int n;
+	do {
+		familyMap.printMenu();
+		cout << "입력 : ";
+		cin >> n;
+		switch (n) {
+		case 1:
+			cout << "검색할 이름 : ";
+			cin >> name;
+			familyMap.search(name);
+			break;
+		case 2:
+			cout << "검색할 세대 : ";
+			cin >> level; 
+			familyMap.search(level);
+			break;
+		case 3:
+			cout << "검색할 사람의 이름과 세대를 입력하세요 : ";
+			cin >> name >> level;
+			familyMap.search(level,name);
+			break;
+		case 4:
+			familyMap.printAll();
+			break;
+		case 5:
+			break;
+	
+		}
+	} while (n != 5);
 	return 0;
 }

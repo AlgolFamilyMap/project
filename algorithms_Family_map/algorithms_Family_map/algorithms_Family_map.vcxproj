@@ -147,10 +147,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FamilyMap_LJH.cpp" />
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FamilyMap_LJH.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Family.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
