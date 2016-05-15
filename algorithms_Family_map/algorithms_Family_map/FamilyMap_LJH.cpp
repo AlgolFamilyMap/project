@@ -131,63 +131,72 @@ void FamilyMap::search(string myName) {
 void FamilyMap::search(int level) {
 	printVector.clear();
 	find(root, level);
-	cout << "<검색 결과>" << endl;
-	for (int i = 0; i < printVector.size(); i++)
+	if (printVector.empty())
 	{
-		cout << "- 세대 : " << printVector[i]->level << endl;
-		cout << "- 이름 : " << printVector[i]->myName << endl;
+		cout << "검색결과가 없습니다." << endl;
 	}
-	
+	else {
+		cout << "<검색 결과>" << endl;
+		for (int i = 0; i < printVector.size(); i++)
+		{
+			cout << "- 세대 : " << printVector[i]->level << endl;
+			cout << "- 이름 : " << printVector[i]->myName << endl;
+		}
+	}
 }
 
 void FamilyMap::search(int level, string myName) {
 	treeNode *temp = new treeNode;
 	treeNode *tempBro = new treeNode;		// 형제 찾기
-
-	temp = find(root, myName);
-	tempBro = find(root, temp->parentName)->son;	// 찾은 사람의 부모의 첫번째 아들
-
-	if ((level == temp->level) && (myName == temp->myName)) {
-		// 공통(무조건 있는거)
-		cout << "<검색 결과>" << endl;
-		cout << " - 세대 : " << temp->level << endl;
-		cout << " - 이름 : " << temp->myName << endl;
-
-		// 부모이름
-		if (temp->parentName != "")
-			cout << " - 부모 이름 : " << temp->parentName << endl;
-		else cout << " - 부모 없음" << endl;
-
-		// 자식
-		if (temp->son != NULL) {
-			treeNode *sonBro = temp->son;
-			cout << " - 자식 이름 : ";
-			while (sonBro != NULL) {
-				cout << sonBro->myName << " ";
-				sonBro = sonBro->bro;
-			}
-			cout << endl;
-		}
-		else cout << " - 자식 없음" << endl;
-
-		// 아내
-		if (temp->wife != "")
-			cout << " - 아내 이름 : " << temp->wife << endl;
-		else cout << " - 아내 없음" << endl;
-
-
-		if (tempBro->bro != NULL) {
-			cout << " - 형제 이름 : ";
-
-			while (tempBro != NULL) {
-				if (tempBro->myName != myName)
-					cout << tempBro->myName << " ";
-				tempBro = tempBro->bro;
-			}
-		}
-		else cout << " - 형제 없음" << endl;
+	if (find(root, myName) == NULL)
+	{
+		cout << "검색 결과가 없습니다." << endl;
 	}
+	else {
+		temp = find(root, myName);
+		tempBro = find(root, temp->parentName)->son;	// 찾은 사람의 부모의 첫번째 아들
 
+		if ((level == temp->level) && (myName == temp->myName)) {
+			// 공통(무조건 있는거)
+			cout << "<검색 결과>" << endl;
+			cout << " - 세대 : " << temp->level << endl;
+			cout << " - 이름 : " << temp->myName << endl;
+
+			// 부모이름
+			if (temp->parentName != "")
+				cout << " - 부모 이름 : " << temp->parentName << endl;
+			else cout << " - 부모 없음" << endl;
+
+			// 자식
+			if (temp->son != NULL) {
+				treeNode *sonBro = temp->son;
+				cout << " - 자식 이름 : ";
+				while (sonBro != NULL) {
+					cout << sonBro->myName << " ";
+					sonBro = sonBro->bro;
+				}
+				cout << endl;
+			}
+			else cout << " - 자식 없음" << endl;
+
+			// 아내
+			if (temp->wife != "")
+				cout << " - 아내 이름 : " << temp->wife << endl;
+			else cout << " - 아내 없음" << endl;
+
+
+			if (tempBro->bro != NULL) {
+				cout << " - 형제 이름 : ";
+
+				while (tempBro != NULL) {
+					if (tempBro->myName != myName)
+						cout << tempBro->myName << " ";
+					tempBro = tempBro->bro;
+				}
+			}
+			else cout << " - 형제 없음" << endl;
+		}
+	}
 	cout << endl << endl;
 }
 
