@@ -1,7 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include "FamilyMap_LJH.h"
+
 using namespace std;
 
 FamilyMap::FamilyMap() {
@@ -12,7 +14,6 @@ FamilyMap::FamilyMap() {
 	dummy->wife = "";
 	dummy->bro = NULL;
 	dummy->son = NULL;
-	dummy->next = NULL;
 	root = dummy;
 }
 
@@ -29,44 +30,19 @@ void FamilyMap::insert(int level, string myName, string parentName, string wife)
 	newChild->wife = wife;
 	newChild->bro = NULL;
 	newChild->son = NULL;
-	newChild->next = NULL;
 
-	p = root;
-	while ((p->myName != newChild->parentName) && (p->son != NULL)) {// 부모에서 찾기
-		p2 = p;
-		while ((p2->myName != newChild->parentName) && (p2->next != NULL)) {	// 세대에서 찾기
-			p2 = p2->next;
-		}
-		if (p2->myName == newChild->parentName) {
-			p = p2;
-			break;
-		}
-		p = p->son;
-	}
+	p = find(root, newChild->parentName);
 
-	if (p->son == NULL) {	// 찾았는데 자식이 없으면
-		p->son = newChild;	// 자식을 넣음
+	if (p->son == NULL) {	// 찾았는데 자식이 없으면ㅓ
+		p->son = newChild;			// 자식만 넣음
 
-		p2 = p->son;			// 세대 등록
-		while (p2->next != NULL)
-			p2 = p2->next;
-		if (newChild != p2)
-			p2->next = newChild;
 	}
 	else { // 자식이 있으면
 		p2 = p->son;
 		while (p2->bro != NULL)		// 형제 찾아 이동
 			p2 = p2->bro;
 		p2->bro = newChild;		// 형제 끝에 추가
-
-		p2 = p->son;			// 세대 등록
-		while (p2->next != NULL)
-			p2 = p2->next;
-		if (newChild != p2)
-			p2->next = newChild;
 	}
-
-
 }
 
 void FamilyMap::remove(int level, string myName) {
@@ -74,31 +50,39 @@ void FamilyMap::remove(int level, string myName) {
 }
 
 void FamilyMap::printAll() {
-	treeNode *tempPrint = root->son;		// 출력할 세대
-	treeNode *tempPrintParent = root;		// 출력할 세대의 부모 세대
+	treeNode *sonBro = new treeNode;		// 자식의 형제 출력을 위한 노드
 
-	while (tempPrint != NULL) {
-		treeNode *tempBro = tempPrintParent;		// 출력할 세대의 부모 세대(형제 찾기)
+	getMaxLevel(root);
 
-		cout << "<" << tempPrint->level << " 세대> " << endl;
-		cout << tempPrint->parentName << " : ";
+	// 조상 출력
+	cout << "< 1 세대 >" << endl;
+	cout << root->son->myName << endl << endl;
 
-		while (tempBro != NULL) {
-			treeNode *tempBro2 = tempBro->son;		// 출력할 세대->부모세대->자식(형제 찾기)
-			while (tempBro2 != NULL) {
-				cout << tempBro2->myName << " ";
-				tempBro2 = tempBro2->bro;
+	// 조상 아래
+	for (int i = 2; i <= maxLevel; i++) {		// 최고 세대까지 반복
+		printVector.clear();
+		find(root, i - 1);		// 끝나면 printVector에 i 세대의 부모가 모두 들어가있음
+								// i - 1 == i 세대의 부모
+
+		cout << "< " << i << " 세대 >" << endl;
+
+		for (int j = 0; j < printVector.size(); j++) {
+			if (printVector[j]->son != NULL)	// 자식 있으면
+				sonBro = printVector[j]->son;	// i 세대 첫번째 자식 가져옴
+			else
+				continue;
+
+			cout << printVector[j]->myName << " : ";	// 부모 이름 출력
+
+			while (sonBro != NULL) {		// 부모 자식들 모두 출력
+				cout << sonBro->myName << " ";
+				sonBro = sonBro->bro;
 			}
-			tempBro = tempBro->next;
-			if (tempBro != NULL && tempBro->son != NULL)
-				cout << endl << tempBro->son->parentName << " : ";
+			cout << endl;
 		}
-
-		cout << endl << endl;
-		tempPrint = tempPrint->son;
-
-		tempPrintParent = tempPrintParent->son;
+		cout << endl;
 	}
+
 }
 
 void FamilyMap::search(string myName) {
@@ -110,58 +94,95 @@ void FamilyMap::search(int level) {
 }
 
 void FamilyMap::search(int level, string myName) {
-	treeNode *temp = root;
-	for (int i = 0; i < level - 1; i++) {
-		temp = temp->son;
-	}
+	treeNode *temp = new treeNode;
+	treeNode *tempBro = new treeNode;		// 형제 찾기
 
-	while (temp != NULL) {
-		treeNode *tempBro = temp;	// 형제 찾기
-		treeNode *tempPrint = temp;		// 형제 처음부터 출력
+	temp = find(root, myName);
+	tempBro = find(root, temp->parentName)->son;	// 찾은 사람의 부모의 첫번째 아들
 
-		while (tempBro != NULL) {
-			if ((level == tempBro->level) && (myName == tempBro->myName)) {
-				cout << "<검색 결과>" << endl;
-				cout << " - 세대 : " << tempBro->level << endl;
-				cout << " - 이름 : " << tempBro->myName << endl;
-				if (tempBro->parentName != "")
-					cout << " - 부모 이름 : " << tempBro->parentName << endl;
-				else cout << " - 부모 없음" << endl;
+	if ((level == temp->level) && (myName == temp->myName)) {
+		// 공통(무조건 있는거)
+		cout << "<검색 결과>" << endl;
+		cout << " - 세대 : " << temp->level << endl;
+		cout << " - 이름 : " << temp->myName << endl;
 
-				if (tempBro->son != NULL) {
-					treeNode *sonBro = tempBro->son;
-					cout << " - 자식 이름 : ";
-					while (sonBro != NULL) {
-						cout << sonBro->myName << " ";
-						sonBro = sonBro->bro;
-					}
-					cout << endl;
-				}
-				else cout << " - 자식 없음" << endl;
+		// 부모이름
+		if (temp->parentName != "")
+			cout << " - 부모 이름 : " << temp->parentName << endl;
+		else cout << " - 부모 없음" << endl;
 
-				if (tempBro->wife != "")
-					cout << " - 아내 이름 : " << tempBro->wife << endl;
-				else cout << " - 아내 없음" << endl;
-
-				treeNode *otherBro = tempPrint;
-				if (tempPrint->bro != NULL) {
-					cout << " - 형제 이름 : ";
-
-					while (tempPrint != NULL) {
-						if (tempPrint->myName != myName)
-							cout << tempPrint->myName << " ";
-						tempPrint = tempPrint->bro;
-					}
-				}
-				else cout << " - 형제 없음" << endl;
+		// 자식
+		if (temp->son != NULL) {
+			treeNode *sonBro = temp->son;
+			cout << " - 자식 이름 : ";
+			while (sonBro != NULL) {
+				cout << sonBro->myName << " ";
+				sonBro = sonBro->bro;
 			}
-
-			tempBro = tempBro->next;
+			cout << endl;
 		}
+		else cout << " - 자식 없음" << endl;
 
-		temp = temp->son;
+		// 아내
+		if (temp->wife != "")
+			cout << " - 아내 이름 : " << temp->wife << endl;
+		else cout << " - 아내 없음" << endl;
+
+
+		if (tempBro->bro != NULL) {
+			cout << " - 형제 이름 : ";
+
+			while (tempBro != NULL) {
+				if (tempBro->myName != myName)
+					cout << tempBro->myName << " ";
+				tempBro = tempBro->bro;
+			}
+		}
+		else cout << " - 형제 없음" << endl;
 	}
+
 	cout << endl << endl;
+}
+
+treeNode* FamilyMap::find(treeNode *x, string myName) {
+	treeNode *z = new treeNode;
+	treeNode *z2 = new treeNode;
+
+	if ((x != NULL) && (x->myName == myName))	// 찾으면 리턴
+		return x;
+
+	if (x != NULL) {		// 재귀
+		z = find(x->son, myName);
+		z2 = find(x->bro, myName);
+	}
+
+	if ((z != NULL) && (z->myName == myName))		// son에서 찾으면
+		return z;
+	else if ((z2 != NULL) && (z2->myName == myName))	// bro에서 찾으면
+		return z2;
+	else		// 못 찾음
+		return 0;
+}
+
+void FamilyMap::find(treeNode *x, int level) {
+	if (x != NULL && x->level == level) {	// 찾으려면 세대면 벡터에 저장
+		printVector.push_back(x);
+	}
+
+	if (x != NULL) {		// 재귀
+		find(x->son, level);
+		find(x->bro, level);
+	}
+}
+
+void FamilyMap::getMaxLevel(treeNode *x) {
+	if (x != NULL && maxLevel < x->level)
+		maxLevel = x->level;
+
+	if (x != NULL) {		// 재귀
+		getMaxLevel(x->son);
+		getMaxLevel(x->bro);
+	}
 }
 
 bool FamilyMap::isEmpty() {
@@ -175,6 +196,10 @@ void FamilyMap::printMenu() {
 
 }
 
+
+treeNode* FamilyMap::getRoot() {
+	return root;
+}
 
 int main(void) {
 	FamilyMap familyMap;
@@ -200,5 +225,10 @@ int main(void) {
 	familyMap.search(3, "손자3");
 	familyMap.search(2, "자식2");
 	familyMap.search(4, "증손자3");
+
+
+	treeNode *yo = new treeNode;
+	yo = familyMap.find(familyMap.getRoot(), "증손자4");
+	cout << " find 예제 : " << yo->myName << endl;
 	return 0;
 }
