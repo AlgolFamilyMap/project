@@ -95,22 +95,22 @@ void FamilyMap::remove(int level, string name) // delete node and chilren
 	temp = pTemp->son;
 
 	if (temp->myName == sTemp->myName) {
-		if (sTemp->bro != dummy) {
+		if (sTemp->bro != NULL) {
 			pTemp->son = sTemp->bro;
 		}
 		else {
-			pTemp->son = dummy;
+			pTemp->son = NULL;
 		}
 	}
 	else {
 		while (temp->bro != sTemp){
 			temp = temp->bro;
 		}
-		if (sTemp->bro != dummy) {
+		if (sTemp->bro != NULL) {
 			temp->bro = sTemp->bro;
 		}
 		else {
-			temp->bro = dummy;
+			temp->bro = NULL;
 		}
 	}
 	
@@ -131,8 +131,9 @@ void FamilyMap::printAll() {
 		printVector.clear();
 		find(root, i - 1);		// 끝나면 printVector에 i 세대의 부모가 모두 들어가있음
 								// i - 1 == i 세대의 부모
-
-		cout << "< " << i << " 세대 >" << endl;
+		if(printVector.size() >0) 
+			cout << "< " << i << " 세대 >" << endl;
+		else break;
 
 		for (int j = 0; j < printVector.size(); j++) {
 			if (printVector[j]->son != NULL)	// 자식 있으면
@@ -263,7 +264,7 @@ void FamilyMap::find(treeNode *x, int level) {
 void FamilyMap::getMaxLevel(treeNode *x) {
 	if (x != NULL && maxLevel < x->level)
 		maxLevel = x->level;
-
+	
 	if (x != NULL) {		// 재귀
 		getMaxLevel(x->son);
 		getMaxLevel(x->bro);
