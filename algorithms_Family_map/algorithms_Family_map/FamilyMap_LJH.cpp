@@ -123,7 +123,7 @@ void FamilyMap::printAll() {
 	getMaxLevel(root);
 
 	// 조상 출력
-	cout << "< 1 세대 >" << endl;
+	//cout << "< 1 세대 >" << endl;
 	cout << root->son->myName << endl << endl;
 
 	// 조상 아래
@@ -131,9 +131,9 @@ void FamilyMap::printAll() {
 		printVector.clear();
 		find(root, i - 1);		// 끝나면 printVector에 i 세대의 부모가 모두 들어가있음
 								// i - 1 == i 세대의 부모
-		if(printVector.size() >0) 
+		/*if(printVector.size() >0) 
 			cout << "< " << i << " 세대 >" << endl;
-		else break;
+		else break;*/
 
 		for (int j = 0; j < printVector.size(); j++) {
 			if (printVector[j]->son != NULL)	// 자식 있으면
@@ -141,10 +141,11 @@ void FamilyMap::printAll() {
 			else
 				continue;
 
-			cout << printVector[j]->myName << " : ";	// 부모 이름 출력
+			//cout << printVector[j]->myName << " : ";	// 부모 이름 출력
 
 			while (sonBro != NULL) {		// 부모 자식들 모두 출력
-				cout << sonBro->myName << " ";
+				cout << sonBro->level << " " <<  sonBro->myName << " " <<
+					sonBro->parentName << " " << sonBro->wife << endl;
 				sonBro = sonBro->bro;
 			}
 			cout << endl;
@@ -271,6 +272,58 @@ void FamilyMap::getMaxLevel(treeNode *x) {
 	}
 }
 
+void FamilyMap::writeFile() {
+	ofstream fileOut;
+	fileName = "ouput.txt";
+	fileOut.open(fileName);
+	if (!fileOut.is_open()) {
+		cout << "File Writer Error!" << endl;
+		exit(1);
+	}
+
+	treeNode *sonBro = new treeNode;		// 자식의 형제 출력을 위한 노드
+
+	getMaxLevel(root);
+
+	// 조상 출력
+	cout << "< 1 세대 >" << endl;
+	cout << root->son->myName << endl << endl;
+	
+	// 조상 아래
+	for (int i = 2; i <= maxLevel; i++) {		// 최고 세대까지 반복
+		printVector.clear();
+		find(root, i - 1);		// 끝나면 printVector에 i 세대의 부모가 모두 들어가있음
+								// i - 1 == i 세대의 부모
+		if (printVector.size() >0)
+			cout << "< " << i << " 세대 >" << endl;
+		else break;
+
+		for (int j = 0; j < printVector.size(); j++) {
+			if (printVector[j]->son != NULL)	// 자식 있으면
+				sonBro = printVector[j]->son;	// i 세대 첫번째 자식 가져옴
+			else
+				continue;
+
+			cout << printVector[j]->myName << " : ";	// 부모 이름 출력
+			fileOut << printVector[j]->level << '\t' << printVector[j]->myName << '\t' <<
+				printVector[j]->parentName << '\t' << printVector[j]->wife << endl;
+			while (sonBro != NULL) {		// 부모 자식들 모두 출력
+				cout << sonBro->myName << " ";
+				fileOut << sonBro->level << '\t' << sonBro->myName << '\t' <<
+					sonBro->parentName << '\t' << sonBro->wife << endl;
+				sonBro = sonBro->bro;
+			}
+			cout << endl;
+		}
+		cout << endl;
+	}
+
+		
+
+
+	fileOut.close();
+}
+
 bool FamilyMap::isEmpty() {
 	if (root == dummy)
 		return true;
@@ -291,7 +344,9 @@ int main(void) {
 	FamilyMap familyMap("Family.txt");
 	string name;
 	int level;
-	int n;
+	int n= 0;
+	int level2;
+	string name2;
 	do {
 		familyMap.printMenu();
 		cout << "입력 : ";
@@ -316,16 +371,17 @@ int main(void) {
 			familyMap.printAll();
 			break;
 		case 5:
+			familyMap.writeFile();
 			break;
 		case 6:
-			int level2;
-			string name2;
 			cout << "삭제(레벨, 이름)" << endl;
 			cin >> level2 >> name2;
 			familyMap.remove(level2, name2);
 			familyMap.getMaxLevel(familyMap.getRoot());
 			break;
-	
+		default:
+			cout << "에러임" << endl;
+			exit(0); break;
 		}
 	} while (n != 5);
 	return 0;

@@ -30,6 +30,7 @@ public:
 	treeNode* find(treeNode *x, string myName);		// find는 해당 노드 찾는 함수 (이름으로 찾기)
 	void find(treeNode *x, int level);				// 해당 세대 모두 찾아서 vector에 추가
 	void getMaxLevel(treeNode *x);		// 최대 레벨
+	void writeFile();
 	bool isEmpty();
 	void printMenu();
 	treeNode* getRoot();		// root 반환
