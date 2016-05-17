@@ -69,7 +69,7 @@ void FamilyMap::insert(int level, string myName, string parentName, string wife)
 	newChild->wife = wife;
 	newChild->bro = NULL;
 	newChild->son = NULL;
-	if(parentName != "root")
+	if (parentName != "root")
 		p = find(root, newChild->parentName);
 
 	if (p->son == NULL) {	// 찾았는데 자식이 없으면ㅓ
@@ -84,8 +84,37 @@ void FamilyMap::insert(int level, string myName, string parentName, string wife)
 	}
 }
 
-void FamilyMap::remove(int level, string myName) {
 
+void FamilyMap::remove(int level, string name) // delete node and chilren
+{
+	treeNode *pTemp = new treeNode;
+	treeNode *sTemp = new treeNode;
+	treeNode *temp = new treeNode;
+	sTemp = find(root, name);
+	pTemp = find(root, sTemp->parentName);
+	temp = pTemp->son;
+
+	if (temp->myName == sTemp->myName) {
+		if (sTemp->bro != dummy) {
+			pTemp->son = sTemp->bro;
+		}
+		else {
+			pTemp->son = dummy;
+		}
+	}
+	else {
+		while (temp->bro != sTemp){
+			temp = temp->bro;
+		}
+		if (sTemp->bro != dummy) {
+			temp->bro = sTemp->bro;
+		}
+		else {
+			temp->bro = dummy;
+		}
+	}
+	
+	delete sTemp;
 }
 
 void FamilyMap::printAll() {
@@ -249,7 +278,7 @@ bool FamilyMap::isEmpty() {
 }
 
 void FamilyMap::printMenu() {
-	cout << "1. 검색(이름)\t2. 검색(레벨)\t3.검색(레벨&이름)\t4.전체 출력\t5. 종료" << endl;
+	cout << "1. 검색(이름)\t2. 검색(레벨)\t3.검색(레벨&이름)\t4.전체 출력\t5. 종료\t6. 삭제" << endl;
 }
 
 
@@ -286,6 +315,14 @@ int main(void) {
 			familyMap.printAll();
 			break;
 		case 5:
+			break;
+		case 6:
+			int level2;
+			string name2;
+			cout << "삭제(레벨, 이름)" << endl;
+			cin >> level2 >> name2;
+			familyMap.remove(level2, name2);
+			familyMap.getMaxLevel(familyMap.getRoot());
 			break;
 	
 		}

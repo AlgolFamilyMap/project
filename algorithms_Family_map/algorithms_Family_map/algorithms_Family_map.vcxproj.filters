@@ -28,7 +28,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\Family.txt">
+    <Text Include="Family.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="change.txt">
       <Filter>리소스 파일</Filter>
     </Text>
   </ItemGroup>

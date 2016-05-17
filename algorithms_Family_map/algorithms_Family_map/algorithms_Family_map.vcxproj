@@ -155,7 +155,8 @@
     <ClInclude Include="FamilyMap_LJH.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\Family.txt" />
+    <Text Include="change.txt" />
+    <Text Include="Family.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
