@@ -26,6 +26,9 @@
     <ClInclude Include="FamilyMap_LJH.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="sort.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Family.txt">
