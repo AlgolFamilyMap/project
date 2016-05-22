@@ -313,7 +313,7 @@ void FamilyMap::getMaxLevel(treeNode *x) {
 
 void FamilyMap::writeFile() {
 	ofstream fileOut;
-	fileName = "output.txt";
+	fileName = "family.txt";
 	fileOut.open(fileName);
 	if (!fileOut.is_open()) {
 		cout << "File Writer Error!" << endl;
@@ -323,7 +323,6 @@ void FamilyMap::writeFile() {
 	treeNode *sonBro = new treeNode;		// 자식의 형제 출력을 위한 노드
 
 	getMaxLevel(root);
-	fileOut << "세대\t이름\t부모\t배우자" << endl;
 	// 조상 출력
 	//cout << "< 1 세대 >" << endl;
 
@@ -364,6 +363,7 @@ bool FamilyMap::isEmpty() {
 		return false;
 }
 
+
 void FamilyMap::printMenu() {
 	cout << "1. 검색(이름)\t2. 검색(레벨)\t3.검색(레벨&이름)\t4.전체 출력\t5. 종료\t6. 삭제" << endl;
 }
@@ -376,7 +376,7 @@ treeNode* FamilyMap::getRoot() {
 int main(void) {
 	FamilyMap familyMap("family.txt");
 	string name;
-	char level;
+	int level;
 	char *temp_n = new char;
 	char n;
 	int level2;
@@ -421,11 +421,11 @@ int main(void) {
 			case '2':
 				cout << "검색할 세대 : ";
 				cin >> level;
-				if (!isdigit(level))
+				/*if (!isdigit(level))
 				{
 					cout << "숫자를 입력하세요" << endl; break;
 				}
-				else
+				else*/
 					familyMap.search(level); break;
 			case '3':
 				cout << "검색할 사람의 이름과 세대를 입력하세요 : ";
