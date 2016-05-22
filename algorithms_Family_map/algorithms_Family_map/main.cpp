@@ -13,15 +13,14 @@ bool isDigit(string s) {
 
 int main(void) {
 	FamilyMap familyMap("family.txt");
-	string name;
-	int level;
+	string name;		// 검색할 이름
 	char *temp_n = new char;
 	char n;
-	string check;
-	string name2;
-	int _level = 0;
+	string check;		// 숫자 input 용
+	string name2;		// 검색 이름2
 	string _name = "", _pname = "", _wife = "";
 	char saveFile;		// 변경사항 저장?
+	int loginNum = 0;
 
 	cout << "--------------<사이버 족보 시스템>--------------" << endl;
 	cout << "                    Menual                      " << endl;
@@ -31,6 +30,10 @@ int main(void) {
 	cout << "------------------------------------------------" << endl;
 	cout << "관리자 확인을 합니다. 아이디와 비밀번호를 입력하세요." << endl;
 	/*while (1) {
+	if((loginNum++) >= 5) {
+		cout << "로그인을 5회 실패하셨습니다. 프로그램이 종료됩니다." << endl;
+		return 0;
+	}
 	string _id, _password;
 	string check_id = "4조", check_pw = "홍영식_교수님_사랑해요";
 	cout << "아이디 : ";
