@@ -203,19 +203,19 @@ void FamilyMap::printAll() {
 
 }
 
-void FamilyMap::search(string myName) {
-	treeNode *temp = new treeNode;
-	if (find(root, myName) == NULL)
-	{
-		cout << "검색 결과가 없습니다." << endl;
-	}
-	else {
-		temp = find(root, myName);
-		cout << "- 세대 : " << temp->level << endl;
-		cout << "- 이름 : " << temp->myName << endl;
-		cout << "- 부모 : " << temp->parentName << endl;
-	}
-}
+//void FamilyMap::search(string myName) {
+//	treeNode *temp = new treeNode;
+//	if (find(root, myName) == NULL)
+//	{
+//		cout << "검색 결과가 없습니다." << endl;
+//	}
+//	else {
+//		temp = find(root, myName);
+//		cout << "- 세대 : " << temp->level << endl;
+//		cout << "- 이름 : " << temp->myName << endl;
+//		cout << "- 부모 : " << temp->parentName << endl;
+//	}
+//}
 
 void FamilyMap::search(int level) {
 	printVector.clear();
@@ -234,22 +234,19 @@ void FamilyMap::search(int level) {
 	}
 }
 
-void FamilyMap::search(int level, string myName) {
+void FamilyMap::search(string myName) {
 	treeNode *temp = new treeNode;
 	treeNode *tempBro = new treeNode;		// 형제 찾기
 
 
 	temp = find(root, myName);
-	tempBro = find(root, temp->parentName)->son;	// 찾은 사람의 부모의 첫번째 아들
 	if (temp == NULL) {
 		cout << "해당 이름을 찾을 수 없습니다. " << endl;
 		return;
 	}
-	if (temp->level != level) {
-		cout << "세대가 맞지 않습니다. 다시 입력하세요." << endl;
-		return;
-	}
-	if ((level == temp->level) && (myName == temp->myName)) {
+	tempBro = find(root, temp->parentName)->son;	// 찾은 사람의 부모의 첫번째 아들
+	
+	if (myName == temp->myName) {
 		// 공통(무조건 있는거)
 		cout << "<검색 결과>" << endl;
 		cout << " - 세대 : " << temp->level << endl;
@@ -388,7 +385,7 @@ bool FamilyMap::isEmpty() {
 
 
 void FamilyMap::printMenu() {
-	cout << "1. 검색(이름)\t2. 검색(레벨)\t3.검색(레벨&이름)\t4.전체 출력\t5. 종료\n6. 삭제\t\t7. 삽입\t\t8.아내 수정" << endl;
+	cout << "1. 검색(이름)\t2. 검색(레벨)\t3.전체 출력\t4. 삭제\n5. 삽입\t\t6.아내 수정\t7. 종료" << endl;
 }
 
 
@@ -457,30 +454,15 @@ int main(void) {
 				else*/
 					familyMap.search(level); break;
 			case '3':
-				cout << "검색할 사람의 이름과 세대를 입력하세요 : ";
-				cin >> name >> level;
-				familyMap.search(level, name);
-				break;
-			case '4':
 				familyMap.printAll(); 
 				break;
-			case '5':
-				cout << "변경사항을 저장하고 종료하시겠습니까? (Y or N)" << endl;
-				cin >> saveFile;
-				if (saveFile == 'Y' || saveFile == 'y')
-					familyMap.writeFile();
-				else if (saveFile == 'N' || saveFile == 'n')
-					exit(0);
-				else
-					cout << "올바른 문자를 입력해주세요." << endl;
-				break;
-			case '6':
+			case '4':
 				cout << "삭제(레벨, 이름)" << endl;
 				cin >> level2 >> name2;
 				familyMap.remove(level2, name2);
 				familyMap.getMaxLevel(familyMap.getRoot());
 				break;
-			case '7':
+			case '5':
 				cout << "삽입할 사람의 [세대, 이름, 부모이름, 아내(있으면)]을 입력해 주세요. " << endl;
 				cin >> _level >> _name >> _pname;
 				if (getchar() == ' ') cin >> _wife;
@@ -492,12 +474,22 @@ int main(void) {
 					familyMap.insert(_level, _name, _pname, _wife);
 				}
 				break;
-			case '8':
+			case '6':
 				cout << "수정할 사람의 이름과 아내를 입력해주세요." << endl;
 				cin >> _name;
 				if (getchar() == ' ') cin >> _wife;
 				else _wife = "(이혼)";
 				familyMap.wifeModify(_name, _wife);
+				break;
+			case '7':
+				cout << "변경사항을 저장하고 종료하시겠습니까? (Y or N)" << endl;
+				cin >> saveFile;
+				if (saveFile == 'Y' || saveFile == 'y')
+					familyMap.writeFile();
+				else if (saveFile == 'N' || saveFile == 'n')
+					exit(0);
+				else
+					cout << "올바른 문자를 입력해주세요." << endl;
 				break;
 				//default:
 					//cout << "에러임" << endl;

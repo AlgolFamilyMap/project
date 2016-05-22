@@ -27,7 +27,6 @@ public:
 	void printAll();
 	void search(string myName);			// search 는 관련된 거 출력하는 거고
 	void search(int level);
-	void search(int level, string myName);
 	treeNode* find(treeNode *x, string myName);		// find는 해당 노드 찾는 함수 (이름으로 찾기)
 	void find(treeNode *x, int level);				// 해당 세대 모두 찾아서 vector에 추가
 	void getMaxLevel(treeNode *x);		// 최대 레벨
