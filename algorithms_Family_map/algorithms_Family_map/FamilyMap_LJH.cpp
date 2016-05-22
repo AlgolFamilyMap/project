@@ -84,11 +84,11 @@ void FamilyMap::insert(int level, string myName, string parentName, string wife)
 	}
 	if (find(root, myName) != NULL)
 	{
-		cout << "동명이인이 존재합니다." << endl;
+		cout << "동명이인이 존재하거나 올바른 이름이 아닙니다." << endl;
 		return;
 	}
 	if ((level - 1) != p->level) {
-		cout << "부모의 세대가 맞지 않습니다. 다시 확인해주세요." << endl;
+		cout << "추가하려는 세대와 부모의 세대는 1 차이여야 합니다." << endl;
 		return;
 	}
 	if (p->son == NULL) {	// 찾았는데 자식이 없으면

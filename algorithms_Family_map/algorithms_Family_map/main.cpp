@@ -1,12 +1,23 @@
 #include "FamilyMap_LJH.h"
 
+bool isDigit(string s) {
+	int len = s.size();
+	for (int i = 0; i<len; ++i) {
+
+		if (!isdigit(s[i])) {
+			return false;
+		}
+	}
+	return true;
+}
+
 int main(void) {
 	FamilyMap familyMap("family.txt");
 	string name;
 	int level;
 	char *temp_n = new char;
 	char n;
-	int level2;
+	string check;
 	string name2;
 	int _level = 0;
 	string _name = "", _pname = "", _wife = "";
@@ -53,13 +64,14 @@ int main(void) {
 				break;
 			case '2':
 				cout << "검색할 세대 : ";
-				cin >> level;
-				/*if (!isdigit(level))
-				{
-				cout << "숫자를 입력하세요" << endl; break;
+				cin >> check;
+				if (!isDigit(check)) {
+					cout << "숫자를 입력하세요" << endl;
 				}
-				else*/
-				familyMap.search(level); break;
+				else {
+					familyMap.search(stoi(check));
+				}
+				break;
 			case '3':
 				familyMap.printAll();
 				break;
@@ -71,9 +83,14 @@ int main(void) {
 				break;
 			case '5':
 				cout << "삽입할 사람의 [세대, 이름, 부모이름, 배우자(있으면)]을 입력해 주세요. " << endl;
-				cin >> _level >> _name >> _pname;
+				cin >> check >> _name >> _pname;
 				if (getchar() == ' ') cin >> _wife;
 				else _wife = "(미혼)";
+
+				if (!isDigit(check)) {
+					cout << "세대는 숫자를 입력하세요" << endl;
+					break;
+				}
 				if (_level == 1)
 					cout << "root에 추가할 수 없습니다." << endl;
 				else
