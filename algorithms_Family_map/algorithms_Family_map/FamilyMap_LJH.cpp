@@ -78,13 +78,17 @@ void FamilyMap::insert(int level, string myName, string parentName, string wife)
 
 	if (parentName != "root")
 		p = find(root, newChild->parentName);
+	if (p == NULL) {
+		cout << "부모 이름을 찾을 수 없습니다. 제대로 입력하세요." << endl;
+		return;
+	}
 	if (find(root, myName) != NULL)
 	{
 		cout << "동명이인이 존재합니다." << endl;
 		return;
 	}
-	if (p == NULL) {
-		cout << "부모 이름을 찾을 수 없습니다. 제대로 입력하세요." << endl;
+	if ((level - 1) != p->level) {
+		cout << "부모의 세대가 맞지 않습니다. 다시 확인해주세요." << endl;
 		return;
 	}
 	if (p->son == NULL) {	// 찾았는데 자식이 없으면
