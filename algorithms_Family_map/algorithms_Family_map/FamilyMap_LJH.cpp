@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -18,25 +18,25 @@ FamilyMap::FamilyMap(string fileName) {
 	this->fileName = fileName;
 
 	ifstream fileIn;
-	fileIn.open(fileName); // ÆÄÀÏ ¿­±â
-	if (!fileIn.is_open()) { // ÆÄÀÏ ¿­±â ¿À·ù Ã¼Å©
+	fileIn.open(fileName); // íŒŒì¼ ì—´ê¸°
+	if (!fileIn.is_open()) { // íŒŒì¼ ì—´ê¸° ì˜¤ë¥˜ ì²´í¬
 		cout << "File Open error!" << endl;
 		exit(1);
 	}
-	//ÆÄÀÏ ÀÔ·Â
+	//íŒŒì¼ ì…ë ¥
 	treeNode itemTable[100];
 	int tableSize = 0;
 	string buffer, strTemp[4];
-	// ÆÄÀÏ ÀĞ±â ¹× itemTable¿¡ ÀúÀå
+	// íŒŒì¼ ì½ê¸° ë° itemTableì— ì €ì¥
 	while (!fileIn.eof()) {
-		getline(fileIn, buffer); // buffer¿¡ ÀúÀå
+		getline(fileIn, buffer); // bufferì— ì €ì¥
 		if (buffer.size() < 1)
 			break;
 
-		// ÅäÅ« ºĞ¸®
+		// í† í° ë¶„ë¦¬
 		int index = -1, beginIndex = 0;
 		for (int i = 0; i < 3; i++) {
-			index = buffer.find('\t', ++index); // "\t" Ã£±â
+			index = buffer.find('\t', ++index); // "\t" ì°¾ê¸°
 			strTemp[i] = buffer.substr(beginIndex, index - beginIndex);
 			beginIndex = index + 1;
 		}
@@ -49,13 +49,13 @@ FamilyMap::FamilyMap(string fileName) {
 		if (strTemp[3] != "")
 			itemTable[tableSize - 1].wife = strTemp[3];
 		else
-			itemTable[tableSize - 1].wife = "(¹ÌÈ¥)";
+			itemTable[tableSize - 1].wife = "(ë¯¸í˜¼)";
 	}
 
-	// itemTable ¿À¸§Â÷¼ø Á¤·Ä
+	// itemTable ì˜¤ë¦„ì°¨ìˆœ ì •ë ¬
 	quickSort(itemTable, 0, tableSize - 1);
 
-	// Æ®¸®¿¡ »ğÀÔ
+	// íŠ¸ë¦¬ì— ì‚½ì…
 	for (int i = 0; i < tableSize; i++)
 		insert(itemTable[i].level, itemTable[i].myName, itemTable[i].parentName, itemTable[i].wife);
 
@@ -68,7 +68,7 @@ FamilyMap::~FamilyMap() {
 
 void FamilyMap::insert(int level, string myName, string parentName, string wife) {
 	treeNode *newChild = new treeNode;
-	treeNode *p = root, *p2 = new treeNode; // p = ÀÚ½Ä Ã£±â(son¸¸ ÀÌµ¿),  p2 = ÇüÁ¦ Ã£±â(bro¸¸ ÀÌµ¿)
+	treeNode *p = root, *p2 = new treeNode; // p = ìì‹ ì°¾ê¸°(sonë§Œ ì´ë™),  p2 = í˜•ì œ ì°¾ê¸°(broë§Œ ì´ë™)
 	newChild->parentName = parentName;
 	newChild->myName = myName;
 	newChild->level = level;
@@ -78,20 +78,24 @@ void FamilyMap::insert(int level, string myName, string parentName, string wife)
 
 	if (parentName != "root")
 		p = find(root, newChild->parentName);
-
-	if (p == NULL) {
-		cout << "ºÎ¸ğ ÀÌ¸§À» Ã£À» ¼ö ¾ø½À´Ï´Ù. Á¦´ë·Î ÀÔ·ÂÇÏ¼¼¿ä." << endl;
+	if (find(root, myName) != NULL)
+	{
+		cout << "ë™ëª…ì´ì¸ì´ ì¡´ì¬í•©ë‹ˆë‹¤." << endl;
 		return;
 	}
-	if (p->son == NULL) {	// Ã£¾Ò´Âµ¥ ÀÚ½ÄÀÌ ¾øÀ¸¸é
-		p->son = newChild;			// ÀÚ½Ä¸¸ ³ÖÀ½
+	if (p == NULL) {
+		cout << "ë¶€ëª¨ ì´ë¦„ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤. ì œëŒ€ë¡œ ì…ë ¥í•˜ì„¸ìš”." << endl;
+		return;
+	}
+	if (p->son == NULL) {	// ì°¾ì•˜ëŠ”ë° ìì‹ì´ ì—†ìœ¼ë©´
+		p->son = newChild;			// ìì‹ë§Œ ë„£ìŒ
 
 	}
-	else { // ÀÚ½ÄÀÌ ÀÖÀ¸¸é
+	else { // ìì‹ì´ ìˆìœ¼ë©´
 		p2 = p->son;
-		while (p2->bro != NULL)		// ÇüÁ¦ Ã£¾Æ ÀÌµ¿
+		while (p2->bro != NULL)		// í˜•ì œ ì°¾ì•„ ì´ë™
 			p2 = p2->bro;
-		p2->bro = newChild;		// ÇüÁ¦ ³¡¿¡ Ãß°¡
+		p2->bro = newChild;		// í˜•ì œ ëì— ì¶”ê°€
 	}
 }
 
@@ -99,7 +103,7 @@ void FamilyMap::insert(int level, string myName, string parentName, string wife)
 void FamilyMap::remove(int level, string name) // delete node and chilren
 {
 	if (name == root->son->myName) {
-		cout << "Á¶»óÀº »èÁ¦ ºÒ°¡´ÉÇÕ´Ï´Ù" << endl;
+		cout << "ì¡°ìƒì€ ì‚­ì œ ë¶ˆê°€ëŠ¥í•©ë‹ˆë‹¤" << endl;
 		return;
 	}
 	treeNode *pTemp = new treeNode;
@@ -107,11 +111,11 @@ void FamilyMap::remove(int level, string name) // delete node and chilren
 	treeNode *temp = new treeNode;
 	sTemp = find(root, name);
 	if (sTemp == NULL) {
-		cout << "ÇØ´ç ÀÌ¸§À» Ã£À» ¼ö ¾ø½À´Ï´Ù. " << endl;
+		cout << "í•´ë‹¹ ì´ë¦„ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤. " << endl;
 		return;
 	}
 	if (sTemp->level != level) {
-		cout << "¼¼´ë°¡ ¸ÂÁö ¾Ê½À´Ï´Ù. ´Ù½Ã ÀÔ·ÂÇÏ¼¼¿ä." << endl;
+		cout << "ì„¸ëŒ€ê°€ ë§ì§€ ì•ŠìŠµë‹ˆë‹¤. ë‹¤ì‹œ ì…ë ¥í•˜ì„¸ìš”." << endl;
 		return;
 	}
 
@@ -141,34 +145,53 @@ void FamilyMap::remove(int level, string name) // delete node and chilren
 	delete sTemp;
 }
 
+
+void FamilyMap::wifeModify(string myName, string wife) {
+	treeNode *temp = new treeNode;
+
+	temp = find(root, myName);
+	if (temp == NULL) {
+		cout << "í•´ë‹¹ ì´ë¦„ì´ ì—†ìŠµë‹ˆë‹¤." << endl;
+		return;
+	}
+	else {
+		if (temp->wife == "(ë¯¸í˜¼)")
+		{
+			temp->wife = wife;
+		}
+		else
+			temp->wife = wife + "(ì¬í˜¼)";
+	}
+}
+
 void FamilyMap::printAll() {
-	treeNode *sonBro = new treeNode;		// ÀÚ½ÄÀÇ ÇüÁ¦ Ãâ·ÂÀ» À§ÇÑ ³ëµå
+	treeNode *sonBro = new treeNode;		// ìì‹ì˜ í˜•ì œ ì¶œë ¥ì„ ìœ„í•œ ë…¸ë“œ
 
 	getMaxLevel(root);
 
-	// Á¶»ó Ãâ·Â
-	//cout << "< 1 ¼¼´ë >" << endl;
+	// ì¡°ìƒ ì¶œë ¥
+	//cout << "< 1 ì„¸ëŒ€ >" << endl;
 	cout << root->son->level << " " << root->son->myName << " " <<
 		root->son->parentName << " " << root->son->wife << endl << endl;
 
-	// Á¶»ó ¾Æ·¡4
-	for (int i = 2; i <= maxLevel; i++) {		// ÃÖ°í ¼¼´ë±îÁö ¹İº¹
+	// ì¡°ìƒ ì•„ë˜4
+	for (int i = 2; i <= maxLevel; i++) {		// ìµœê³  ì„¸ëŒ€ê¹Œì§€ ë°˜ë³µ
 		printVector.clear();
-		find(root, i - 1);		// ³¡³ª¸é printVector¿¡ i ¼¼´ëÀÇ ºÎ¸ğ°¡ ¸ğµÎ µé¾î°¡ÀÖÀ½
-								// i - 1 == i ¼¼´ëÀÇ ºÎ¸ğ
+		find(root, i - 1);		// ëë‚˜ë©´ printVectorì— i ì„¸ëŒ€ì˜ ë¶€ëª¨ê°€ ëª¨ë‘ ë“¤ì–´ê°€ìˆìŒ
+								// i - 1 == i ì„¸ëŒ€ì˜ ë¶€ëª¨
 								/*if(printVector.size() >0)
-								cout << "< " << i << " ¼¼´ë >" << endl;
+								cout << "< " << i << " ì„¸ëŒ€ >" << endl;
 								else break;*/
 
 		for (int j = 0; j < printVector.size(); j++) {
-			if (printVector[j]->son != NULL)	// ÀÚ½Ä ÀÖÀ¸¸é
-				sonBro = printVector[j]->son;	// i ¼¼´ë Ã¹¹øÂ° ÀÚ½Ä °¡Á®¿È
+			if (printVector[j]->son != NULL)	// ìì‹ ìˆìœ¼ë©´
+				sonBro = printVector[j]->son;	// i ì„¸ëŒ€ ì²«ë²ˆì§¸ ìì‹ ê°€ì ¸ì˜´
 			else
 				continue;
 
-			//cout << printVector[j]->myName << " : ";	// ºÎ¸ğ ÀÌ¸§ Ãâ·Â
+			//cout << printVector[j]->myName << " : ";	// ë¶€ëª¨ ì´ë¦„ ì¶œë ¥
 
-			while (sonBro != NULL) {		// ºÎ¸ğ ÀÚ½Äµé ¸ğµÎ Ãâ·Â
+			while (sonBro != NULL) {		// ë¶€ëª¨ ìì‹ë“¤ ëª¨ë‘ ì¶œë ¥
 				cout << sonBro->level << " " << sonBro->myName << " " <<
 					sonBro->parentName << " " << sonBro->wife << endl;
 				sonBro = sonBro->bro;
@@ -184,13 +207,13 @@ void FamilyMap::search(string myName) {
 	treeNode *temp = new treeNode;
 	if (find(root, myName) == NULL)
 	{
-		cout << "°Ë»ö °á°ú°¡ ¾ø½À´Ï´Ù." << endl;
+		cout << "ê²€ìƒ‰ ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤." << endl;
 	}
 	else {
 		temp = find(root, myName);
-		cout << "- ¼¼´ë : " << temp->level << endl;
-		cout << "- ÀÌ¸§ : " << temp->myName << endl;
-		cout << "- ºÎ¸ğ : " << temp->parentName << endl;
+		cout << "- ì„¸ëŒ€ : " << temp->level << endl;
+		cout << "- ì´ë¦„ : " << temp->myName << endl;
+		cout << "- ë¶€ëª¨ : " << temp->parentName << endl;
 	}
 }
 
@@ -199,64 +222,64 @@ void FamilyMap::search(int level) {
 	find(root, level);
 	if (printVector.empty())
 	{
-		cout << "°Ë»ö°á°ú°¡ ¾ø½À´Ï´Ù." << endl;
+		cout << "ê²€ìƒ‰ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤." << endl;
 	}
 	else {
-		cout << "<°Ë»ö °á°ú>" << endl;
-		cout << level << " ¼¼´ë" << endl;
+		cout << "<ê²€ìƒ‰ ê²°ê³¼>" << endl;
+		cout << level << " ì„¸ëŒ€" << endl;
 		for (int i = 0; i < printVector.size(); i++)
 		{
-			cout << "- ÀÌ¸§ : " << printVector[i]->myName << endl;
+			cout << "- ì´ë¦„ : " << printVector[i]->myName << endl;
 		}
 	}
 }
 
 void FamilyMap::search(int level, string myName) {
 	treeNode *temp = new treeNode;
-	treeNode *tempBro = new treeNode;		// ÇüÁ¦ Ã£±â
+	treeNode *tempBro = new treeNode;		// í˜•ì œ ì°¾ê¸°
 
 
 	temp = find(root, myName);
-	tempBro = find(root, temp->parentName)->son;	// Ã£Àº »ç¶÷ÀÇ ºÎ¸ğÀÇ Ã¹¹øÂ° ¾Æµé
+	tempBro = find(root, temp->parentName)->son;	// ì°¾ì€ ì‚¬ëŒì˜ ë¶€ëª¨ì˜ ì²«ë²ˆì§¸ ì•„ë“¤
 	if (temp == NULL) {
-		cout << "ÇØ´ç ÀÌ¸§À» Ã£À» ¼ö ¾ø½À´Ï´Ù. " << endl;
+		cout << "í•´ë‹¹ ì´ë¦„ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤. " << endl;
 		return;
 	}
 	if (temp->level != level) {
-		cout << "¼¼´ë°¡ ¸ÂÁö ¾Ê½À´Ï´Ù. ´Ù½Ã ÀÔ·ÂÇÏ¼¼¿ä." << endl;
+		cout << "ì„¸ëŒ€ê°€ ë§ì§€ ì•ŠìŠµë‹ˆë‹¤. ë‹¤ì‹œ ì…ë ¥í•˜ì„¸ìš”." << endl;
 		return;
 	}
 	if ((level == temp->level) && (myName == temp->myName)) {
-		// °øÅë(¹«Á¶°Ç ÀÖ´Â°Å)
-		cout << "<°Ë»ö °á°ú>" << endl;
-		cout << " - ¼¼´ë : " << temp->level << endl;
-		cout << " - ÀÌ¸§ : " << temp->myName << endl;
+		// ê³µí†µ(ë¬´ì¡°ê±´ ìˆëŠ”ê±°)
+		cout << "<ê²€ìƒ‰ ê²°ê³¼>" << endl;
+		cout << " - ì„¸ëŒ€ : " << temp->level << endl;
+		cout << " - ì´ë¦„ : " << temp->myName << endl;
 
-		// ºÎ¸ğÀÌ¸§
+		// ë¶€ëª¨ì´ë¦„
 		if (temp->parentName != "")
-			cout << " - ºÎ¸ğ ÀÌ¸§ : " << temp->parentName << endl;
-		else cout << " - ºÎ¸ğ ¾øÀ½" << endl;
+			cout << " - ë¶€ëª¨ ì´ë¦„ : " << temp->parentName << endl;
+		else cout << " - ë¶€ëª¨ ì—†ìŒ" << endl;
 
-		// ÀÚ½Ä
+		// ìì‹
 		if (temp->son != NULL) {
 			treeNode *sonBro = temp->son;
-			cout << " - ÀÚ½Ä ÀÌ¸§ : ";
+			cout << " - ìì‹ ì´ë¦„ : ";
 			while (sonBro != NULL) {
 				cout << sonBro->myName << " ";
 				sonBro = sonBro->bro;
 			}
 			cout << endl;
 		}
-		else cout << " - ÀÚ½Ä ¾øÀ½" << endl;
+		else cout << " - ìì‹ ì—†ìŒ" << endl;
 
-		// ¾Æ³»
+		// ì•„ë‚´
 		if (temp->wife != "")
-			cout << " - ¾Æ³» ÀÌ¸§ : " << temp->wife << endl;
-		else cout << " - ¾Æ³» ¾øÀ½" << endl;
+			cout << " - ì•„ë‚´ ì´ë¦„ : " << temp->wife << endl;
+		else cout << " - ì•„ë‚´ ì—†ìŒ" << endl;
 
 
 		if (tempBro->bro != NULL) {
-			cout << " - ÇüÁ¦ ÀÌ¸§ : ";
+			cout << " - í˜•ì œ ì´ë¦„ : ";
 
 			while (tempBro != NULL) {
 				if (tempBro->myName != myName)
@@ -264,7 +287,7 @@ void FamilyMap::search(int level, string myName) {
 				tempBro = tempBro->bro;
 			}
 		}
-		else cout << " - ÇüÁ¦ ¾øÀ½" << endl;
+		else cout << " - í˜•ì œ ì—†ìŒ" << endl;
 	}
 
 	cout << endl << endl;
@@ -274,28 +297,28 @@ treeNode* FamilyMap::find(treeNode *x, string myName) {
 	treeNode *z = new treeNode;
 	treeNode *z2 = new treeNode;
 
-	if ((x != NULL) && (x->myName == myName))	// Ã£À¸¸é ¸®ÅÏ
+	if ((x != NULL) && (x->myName == myName))	// ì°¾ìœ¼ë©´ ë¦¬í„´
 		return x;
 
-	if (x != NULL) {		// Àç±Í
+	if (x != NULL) {		// ì¬ê·€
 		z = find(x->son, myName);
 		z2 = find(x->bro, myName);
 	}
 
-	if ((z != NULL) && (z->myName == myName))		// son¿¡¼­ Ã£À¸¸é
+	if ((z != NULL) && (z->myName == myName))		// sonì—ì„œ ì°¾ìœ¼ë©´
 		return z;
-	else if ((z2 != NULL) && (z2->myName == myName))	// bro¿¡¼­ Ã£À¸¸é
+	else if ((z2 != NULL) && (z2->myName == myName))	// broì—ì„œ ì°¾ìœ¼ë©´
 		return z2;
-	else		// ¸ø Ã£À½
+	else		// ëª» ì°¾ìŒ
 		return 0;
 }
 
 void FamilyMap::find(treeNode *x, int level) {
-	if (x != NULL && x->level == level) {	// Ã£À¸·Á¸é ¼¼´ë¸é º¤ÅÍ¿¡ ÀúÀå
+	if (x != NULL && x->level == level) {	// ì°¾ìœ¼ë ¤ë©´ ì„¸ëŒ€ë©´ ë²¡í„°ì— ì €ì¥
 		printVector.push_back(x);
 	}
 
-	if (x != NULL) {		// Àç±Í
+	if (x != NULL) {		// ì¬ê·€
 		find(x->son, level);
 		find(x->bro, level);
 	}
@@ -305,7 +328,7 @@ void FamilyMap::getMaxLevel(treeNode *x) {
 	if (x != NULL && maxLevel < x->level)
 		maxLevel = x->level;
 
-	if (x != NULL) {		// Àç±Í
+	if (x != NULL) {		// ì¬ê·€
 		getMaxLevel(x->son);
 		getMaxLevel(x->bro);
 	}
@@ -320,33 +343,33 @@ void FamilyMap::writeFile() {
 		exit(1);
 	}
 
-	treeNode *sonBro = new treeNode;		// ÀÚ½ÄÀÇ ÇüÁ¦ Ãâ·ÂÀ» À§ÇÑ ³ëµå
+	treeNode *sonBro = new treeNode;		// ìì‹ì˜ í˜•ì œ ì¶œë ¥ì„ ìœ„í•œ ë…¸ë“œ
 
 	getMaxLevel(root);
-	// Á¶»ó Ãâ·Â
-	//cout << "< 1 ¼¼´ë >" << endl;
+	// ì¡°ìƒ ì¶œë ¥
+	//cout << "< 1 ì„¸ëŒ€ >" << endl;
 
 	fileOut << root->son->level << "\t" << root->son->myName << "\t" <<
 		root->son->parentName << "\t" << root->son->wife << endl;
 
-	// Á¶»ó ¾Æ·¡4
-	for (int i = 2; i <= maxLevel; i++) {		// ÃÖ°í ¼¼´ë±îÁö ¹İº¹
+	// ì¡°ìƒ ì•„ë˜4
+	for (int i = 2; i <= maxLevel; i++) {		// ìµœê³  ì„¸ëŒ€ê¹Œì§€ ë°˜ë³µ
 		printVector.clear();
-		find(root, i - 1);		// ³¡³ª¸é printVector¿¡ i ¼¼´ëÀÇ ºÎ¸ğ°¡ ¸ğµÎ µé¾î°¡ÀÖÀ½
-								// i - 1 == i ¼¼´ëÀÇ ºÎ¸ğ
+		find(root, i - 1);		// ëë‚˜ë©´ printVectorì— i ì„¸ëŒ€ì˜ ë¶€ëª¨ê°€ ëª¨ë‘ ë“¤ì–´ê°€ìˆìŒ
+								// i - 1 == i ì„¸ëŒ€ì˜ ë¶€ëª¨
 								/*if(printVector.size() >0)
-								cout << "< " << i << " ¼¼´ë >" << endl;
+								cout << "< " << i << " ì„¸ëŒ€ >" << endl;
 								else break;*/
 
 		for (int j = 0; j < printVector.size(); j++) {
-			if (printVector[j]->son != NULL)	// ÀÚ½Ä ÀÖÀ¸¸é
-				sonBro = printVector[j]->son;	// i ¼¼´ë Ã¹¹øÂ° ÀÚ½Ä °¡Á®¿È
+			if (printVector[j]->son != NULL)	// ìì‹ ìˆìœ¼ë©´
+				sonBro = printVector[j]->son;	// i ì„¸ëŒ€ ì²«ë²ˆì§¸ ìì‹ ê°€ì ¸ì˜´
 			else
 				continue;
 
-			//cout << printVector[j]->myName << " : ";	// ºÎ¸ğ ÀÌ¸§ Ãâ·Â
+			//cout << printVector[j]->myName << " : ";	// ë¶€ëª¨ ì´ë¦„ ì¶œë ¥
 
-			while (sonBro != NULL) {		// ºÎ¸ğ ÀÚ½Äµé ¸ğµÎ Ãâ·Â
+			while (sonBro != NULL) {		// ë¶€ëª¨ ìì‹ë“¤ ëª¨ë‘ ì¶œë ¥
 				fileOut << sonBro->level << "\t" << sonBro->myName << "\t" <<
 					sonBro->parentName << "\t" << sonBro->wife << endl;
 				sonBro = sonBro->bro;
@@ -365,7 +388,7 @@ bool FamilyMap::isEmpty() {
 
 
 void FamilyMap::printMenu() {
-	cout << "1. °Ë»ö(ÀÌ¸§)\t2. °Ë»ö(·¹º§)\t3.°Ë»ö(·¹º§&ÀÌ¸§)\t4.ÀüÃ¼ Ãâ·Â\t5. Á¾·á\t6. »èÁ¦" << endl;
+	cout << "1. ê²€ìƒ‰(ì´ë¦„)\t2. ê²€ìƒ‰(ë ˆë²¨)\t3.ê²€ìƒ‰(ë ˆë²¨&ì´ë¦„)\t4.ì „ì²´ ì¶œë ¥\t5. ì¢…ë£Œ\n6. ì‚­ì œ\t\t7. ì‚½ì…\t\t8.ì•„ë‚´ ìˆ˜ì •" << endl;
 }
 
 
@@ -383,83 +406,101 @@ int main(void) {
 	string name2;
 	int _level = 0;
 	string _name = "", _pname = "", _wife = "";
-	/*
-	cout << "--------------<»çÀÌ¹ö Á·º¸ ½Ã½ºÅÛ>--------------" << endl;
-	cout << "°ü¸®ÀÚ È®ÀÎÀ» ÇÕ´Ï´Ù. ¾ÆÀÌµğ¿Í ºñ¹Ğ¹øÈ£¸¦ ÀÔ·ÂÇÏ¼¼¿ä." << endl;
-	while (1) {
+	char saveFile;		// ë³€ê²½ì‚¬í•­ ì €ì¥?
+	
+	cout << "--------------<ì‚¬ì´ë²„ ì¡±ë³´ ì‹œìŠ¤í…œ>--------------" << endl;
+	cout << "                    Menual                      " << endl;
+	cout <<"  * ë¶€ê³„ ì¤‘ì‹¬ ì¡±ë³´" << endl;
+	cout <<"  * ì¡±ë³´ ë‚´ì— ë™ëª…ì´ì¸ ë¶ˆê°€" << endl;
+	cout <<"  * ì¡±ë³´ì—ì„œ ì‚­ì œë˜ë©´ ìì‹ë“¤ë„ ì‚­ì œ" << endl;
+	cout << "------------------------------------------------" << endl;
+	cout << "ê´€ë¦¬ì í™•ì¸ì„ í•©ë‹ˆë‹¤. ì•„ì´ë””ì™€ ë¹„ë°€ë²ˆí˜¸ë¥¼ ì…ë ¥í•˜ì„¸ìš”." << endl;
+	/*while (1) {
 		string _id, _password;
-		string check_id = "4Á¶", check_pw = "È«¿µ½Ä_±³¼ö´Ô_»ç¶ûÇØ¿ä";
-		cout << "¾ÆÀÌµğ : ";
+		string check_id = "4ì¡°", check_pw = "í™ì˜ì‹_êµìˆ˜ë‹˜_ì‚¬ë‘í•´ìš”";
+		cout << "ì•„ì´ë”” : ";
 		cin >> _id;
-		cout << "ºñ¹Ğ¹øÈ£ : ";
+		cout << "ë¹„ë°€ë²ˆí˜¸ : ";
 		cin >> _password;
 		if (_id.compare(check_id) == 0 && (_password.compare(check_pw)) == 0) {
-			cout << "·Î±×ÀÎ ¼º°ø!" << endl;
+			cout << "ë¡œê·¸ì¸ ì„±ê³µ!" << endl;
 			break;
 		}
 		else
-			cout << "¾ÆÀÌµğ È¤Àº ºñ¹Ğ¹øÈ£°¡ ¿Ã¹Ù¸£Áö ¾Ê½À´Ï´Ù." << endl;
+			cout << "ì•„ì´ë”” í˜¹ì€ ë¹„ë°€ë²ˆí˜¸ê°€ ì˜¬ë°”ë¥´ì§€ ì•ŠìŠµë‹ˆë‹¤." << endl;
 	}*/
 	do {
 		familyMap.printMenu();
-		cout << "ÀÔ·Â : ";
+		cout << "ì…ë ¥ : ";
 		cin>>temp_n;
 
 		n=temp_n[0];
 		cin.clear();
 		if (!isdigit(n)||strlen(temp_n)!=1)
 		{
-			cout << "ÀÔ·ÂÀÌ Àß¸øµÇ¾ú½À´Ï´Ù." << endl;
+			cout << "ì…ë ¥ì´ ì˜ëª»ë˜ì—ˆìŠµë‹ˆë‹¤." << endl;
 		}
 		else {
 			switch (n) {
 			case '1':
-				cout << "°Ë»öÇÒ ÀÌ¸§ : ";
+				cout << "ê²€ìƒ‰í•  ì´ë¦„ : ";
 				cin >> name;
 				familyMap.search(name);
 				break;
 			case '2':
-				cout << "°Ë»öÇÒ ¼¼´ë : ";
+				cout << "ê²€ìƒ‰í•  ì„¸ëŒ€ : ";
 				cin >> level;
 				/*if (!isdigit(level))
 				{
-					cout << "¼ıÀÚ¸¦ ÀÔ·ÂÇÏ¼¼¿ä" << endl; break;
+					cout << "ìˆ«ìë¥¼ ì…ë ¥í•˜ì„¸ìš”" << endl; break;
 				}
 				else*/
 					familyMap.search(level); break;
 			case '3':
-				cout << "°Ë»öÇÒ »ç¶÷ÀÇ ÀÌ¸§°ú ¼¼´ë¸¦ ÀÔ·ÂÇÏ¼¼¿ä : ";
+				cout << "ê²€ìƒ‰í•  ì‚¬ëŒì˜ ì´ë¦„ê³¼ ì„¸ëŒ€ë¥¼ ì…ë ¥í•˜ì„¸ìš” : ";
 				cin >> name >> level;
 				familyMap.search(level, name);
 				break;
 			case '4':
-				familyMap.printAll();
+				familyMap.printAll(); 
 				break;
 			case '5':
-				familyMap.writeFile();
-				exit(0);
+				cout << "ë³€ê²½ì‚¬í•­ì„ ì €ì¥í•˜ê³  ì¢…ë£Œí•˜ì‹œê² ìŠµë‹ˆê¹Œ? (Y or N)" << endl;
+				cin >> saveFile;
+				if (saveFile == 'Y' || saveFile == 'y')
+					familyMap.writeFile();
+				else if (saveFile == 'N' || saveFile == 'n')
+					exit(0);
+				else
+					cout << "ì˜¬ë°”ë¥¸ ë¬¸ìë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”." << endl;
 				break;
 			case '6':
-				cout << "»èÁ¦(·¹º§, ÀÌ¸§)" << endl;
+				cout << "ì‚­ì œ(ë ˆë²¨, ì´ë¦„)" << endl;
 				cin >> level2 >> name2;
 				familyMap.remove(level2, name2);
 				familyMap.getMaxLevel(familyMap.getRoot());
 				break;
 			case '7':
-
-				cout << "level°ú nameÀ» ÀÔ·ÂÇØ ÁÖ¼¼¿ä. " << endl;
+				cout << "ì‚½ì…í•  ì‚¬ëŒì˜ [ì„¸ëŒ€, ì´ë¦„, ë¶€ëª¨ì´ë¦„, ì•„ë‚´(ìˆìœ¼ë©´)]ì„ ì…ë ¥í•´ ì£¼ì„¸ìš”. " << endl;
 				cin >> _level >> _name >> _pname;
 				if (getchar() == ' ') cin >> _wife;
-				else _wife = "(¹ÌÈ¥)";
+				else _wife = "(ë¯¸í˜¼)";
 				if (_level == 1)
-					cout << "root¿¡ Ãß°¡ÇÒ ¼ö ¾ø½À´Ï´Ù." << endl;
+					cout << "rootì— ì¶”ê°€í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤." << endl;   
 				else
 				{
 					familyMap.insert(_level, _name, _pname, _wife);
 				}
 				break;
+			case '8':
+				cout << "ìˆ˜ì •í•  ì‚¬ëŒì˜ ì´ë¦„ê³¼ ì•„ë‚´ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”." << endl;
+				cin >> _name;
+				if (getchar() == ' ') cin >> _wife;
+				else _wife = "(ì´í˜¼)";
+				familyMap.wifeModify(_name, _wife);
+				break;
 				//default:
-					//cout << "¿¡·¯ÀÓ" << endl;
+					//cout << "ì—ëŸ¬ì„" << endl;
 					//exit(0); break;
 			}
 		}

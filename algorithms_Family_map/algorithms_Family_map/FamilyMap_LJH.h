@@ -23,6 +23,7 @@ public:
 	~FamilyMap();
 	void insert(int level, string myName, string parentName = "", string wife = "");
 	void remove(int level, string myName);
+	void wifeModify(string myName, string wife);
 	void printAll();
 	void search(string myName);			// search 는 관련된 거 출력하는 거고
 	void search(int level);
