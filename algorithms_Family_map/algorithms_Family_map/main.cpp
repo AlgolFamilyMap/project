@@ -3,10 +3,11 @@
 bool isDigit(string s) {
 	int len = s.size();
 	for (int i = 0; i<len; ++i) {
-
-		if (!isdigit(s[i])) {
+		if(s[i] < '0' || s[i] > '9')
 			return false;
-		}
+		/*if (!isdigit(s[i])) {
+			return false;
+		}*/
 	}
 	return true;
 }
@@ -54,7 +55,7 @@ int main(void) {
 
 		n = temp_n[0];
 		cin.clear();
-		if (!isdigit(n) || strlen(temp_n) != 1)
+		if (!isDigit(temp_n))
 		{
 			cout << "입력이 잘못되었습니다." << endl;
 		}
