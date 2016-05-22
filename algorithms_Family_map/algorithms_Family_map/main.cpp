@@ -64,9 +64,9 @@ int main(void) {
 				familyMap.printAll();
 				break;
 			case '4':
-				cout << "삭제(레벨, 이름)" << endl;
-				cin >> level2 >> name2;
-				familyMap.remove(level2, name2);
+				cout << "삭제(이름)" << endl;
+				cin >> name2;
+				familyMap.remove(name2);
 				familyMap.getMaxLevel(familyMap.getRoot());
 				break;
 			case '5':

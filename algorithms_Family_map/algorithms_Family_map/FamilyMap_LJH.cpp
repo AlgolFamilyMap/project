@@ -104,7 +104,7 @@ void FamilyMap::insert(int level, string myName, string parentName, string wife)
 }
 
 
-void FamilyMap::remove(int level, string name) // delete node and chilren
+void FamilyMap::remove(string name) // delete node and chilren
 {
 	if (name == root->son->myName) {
 		cout << "조상은 삭제 불가능합니다" << endl;
@@ -116,10 +116,6 @@ void FamilyMap::remove(int level, string name) // delete node and chilren
 	sTemp = find(root, name);
 	if (sTemp == NULL) {
 		cout << "해당 이름을 찾을 수 없습니다. " << endl;
-		return;
-	}
-	if (sTemp->level != level) {
-		cout << "세대가 맞지 않습니다. 다시 입력하세요." << endl;
 		return;
 	}
 
