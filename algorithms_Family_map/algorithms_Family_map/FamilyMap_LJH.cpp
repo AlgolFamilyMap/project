@@ -113,31 +113,32 @@ void FamilyMap::remove(string name) // delete node and chilren
 	treeNode *pTemp = new treeNode;
 	treeNode *sTemp = new treeNode;
 	treeNode *temp = new treeNode;
-	sTemp = find(root, name);
-	if (sTemp == NULL) {
+	sTemp = find(root, name); //삭제할 노드
+	if (sTemp == NULL) { //삭제할 노드가 존재하지 않으면 종료
 		cout << "해당 이름을 찾을 수 없습니다. " << endl;
 		return;
 	}
 
-	pTemp = find(root, sTemp->parentName);
-	temp = pTemp->son;
+	pTemp = find(root, sTemp->parentName); //삭제할 노드의 부모노드
+	temp = pTemp->son; //그 부모의 첫번째 자식
 
+	//삭제할 노드가 첫번째 자식인경우
 	if (temp->myName == sTemp->myName) {
-		if (sTemp->bro != NULL) {
+		if (sTemp->bro != NULL) { //형제가 없는경우
 			pTemp->son = sTemp->bro;
 		}
-		else {
+		else { //형제가 존재하는 경우
 			pTemp->son = NULL;
 		}
 	}
-	else {
+	else { //삭제할 노드가 첫번째 자식이 아닌경우
 		while (temp->bro != sTemp) {
 			temp = temp->bro;
 		}
-		if (sTemp->bro != NULL) {
-			temp->bro = sTemp->bro;
+		if (sTemp->bro != NULL) { //형제가 존재하는 경우
+		temp->bro = sTemp->bro;
 		}
-		else {
+		else { //형제가 없는경우
 			temp->bro = NULL;
 		}
 	}

@@ -91,12 +91,9 @@ int main(void) {
 					cout << "세대는 숫자를 입력하세요" << endl;
 					break;
 				}
-				if (_level == 1)
-					cout << "root에 추가할 수 없습니다." << endl;
-				else
-				{
-					familyMap.insert(_level, _name, _pname, _wife);
-				}
+				/*if (_level == 1)
+					cout << "root에 추가할 수 없습니다." << endl;*/
+				familyMap.insert(stoi(check), _name, _pname, _wife);
 				break;
 			case '6':
 				cout << "수정할 사람의 이름과 배우자를 입력해주세요." << endl;
